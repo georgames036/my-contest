@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>MyLang Contest</title>
+  <style>
+    body { font-family: sans-serif; margin: 40px auto; width: 90%; max-width: 800px; }
+    textarea { width: 100%; height: 200px; }
+    button { margin-top: 10px; padding: 8px 20px; }
+    #result { margin-top: 20px; font-size: 18px; }
+  </style>
+</head>
+<body>
+  <h1>MyLang Contest</h1>
+  <h2>問題A: 2つの整数A,Bの和を出力せよ</h2>
+  <p>入力: <code>2 3</code><br>期待する出力: <code>5</code></p>
+  <textarea id="code" placeholder="ここに自作言語で書いてください"></textarea><br>
+  <button onclick="submitCode()">提出</button>
+  <pre id="result"></pre>
+
+  <script>
+    async function submitCode() {
+      const code = document.getElementById("code").value;
+      document.getElementById("result").textContent = "採点中...";
+      const res = await fetch("https://script.google.com/macros/s/AKfycbXXXXXX/exec", {
+        method: "POST",
+        body: JSON.stringify({ problemId: "A", code })
+      });
+      const data = await res.json();
+      document.getElementById("result").textContent = data.result;
+    }
+  </script>
+</body>
+</html>
