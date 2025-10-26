@@ -4,10 +4,11 @@
 <meta charset="UTF-8">
 <title>DNCL Contest</title>
 <style>
-  body { font-family: sans-serif; margin: 40px auto; width: 90%; max-width: 800px; }
+  body { font-family: sans-serif; margin: 40px auto; width: 90%; max-width: 900px; }
   textarea { width: 100%; height: 200px; margin-top: 10px; }
   select, button { margin-top: 10px; padding: 6px 12px; }
-  #result, #description, #sample { margin-top: 20px; font-size: 16px; white-space: pre-wrap; }
+  .problem-section { margin-top: 20px; border: 1px solid #ccc; padding: 15px; border-radius: 8px; }
+  #result { margin-top: 20px; font-size: 16px; white-space: pre-wrap; }
 </style>
 </head>
 <body>
@@ -26,47 +27,73 @@
   </select>
 </label>
 
-<div id="description"></div>
-<div id="sample"></div>
-<button onclick="insertSample()">サンプルコードを挿入</button>
+<div class="problem-section">
+  <h2 id="title"></h2>
+  <p><strong>配点:</strong> <span id="score"></span></p>
+  <p id="description"></p>
+  <p><strong>制約:</strong> <span id="constraints"></span></p>
+  <p><strong>入力:</strong> <span id="inputFormat"></span></p>
+  <p><strong>出力:</strong> <span id="outputFormat"></span></p>
+  <p><strong>入力例:</strong> <pre id="sampleInput"></pre></p>
+  <p><strong>出力例:</strong> <pre id="sampleOutput"></pre></p>
+</div>
 
 <textarea id="code" placeholder="ここにDNCLコードを入力"></textarea><br>
+<button onclick="insertSampleCode()">サンプルコードを挿入</button>
 <button onclick="submitCode()">提出</button>
 
 <pre id="result"></pre>
 
 <script>
+// --- 問題データ ---
 const problems = {
   "1": {
-    "description": "第1問A: 1つの整数Aが入力されるので、それを2倍した値2Aを出力してください",
-    "A": { sampleInput: "任意整数", expected: "2*A" }
+    "A": {
+      title: "足し算",
+      score: 10,
+      description: "ある値Aの2倍の値を求めてください。",
+      constraints: "・1 <= A <= 100\n・入力はすべて整数",
+      inputFormat: "A",
+      outputFormat: "Aの2倍の値2Aを出力せよ",
+      sampleInput: "21\n11",
+      sampleOutput: "42\n22",
+      sampleCode: `# 入力整数 A
+S = A*2
+「Sを表示する」を表示する`
+    }
   }
 };
 
-// 問題表示
+// --- 問題表示更新 ---
 function updateProblem() {
   const p = document.getElementById("problemSelect").value;
   const sub = document.getElementById("subSelect").value;
-  document.getElementById("description").textContent = problems[p].description;
-  document.getElementById("sample").textContent = `小問${sub} サンプル入力: ${problems[p][sub].sampleInput}`;
+  const prob = problems[p][sub];
+
+  document.getElementById("title").textContent = `小問${sub} - ${prob.title}`;
+  document.getElementById("score").textContent = prob.score;
+  document.getElementById("description").textContent = prob.description;
+  document.getElementById("constraints").textContent = prob.constraints;
+  document.getElementById("inputFormat").textContent = prob.inputFormat;
+  document.getElementById("outputFormat").textContent = prob.outputFormat;
+  document.getElementById("sampleInput").textContent = prob.sampleInput;
+  document.getElementById("sampleOutput").textContent = prob.sampleOutput;
 }
 
-// サンプルコード挿入
-function insertSample() {
-  const codeArea = document.getElementById("code");
-  codeArea.value = `# 任意整数 A が入力されます
-# A = 入力される整数
-S = A*2
-「Sを表示する」を表示する`;
+// --- サンプルコード挿入 ---
+function insertSampleCode() {
+  const p = document.getElementById("problemSelect").value;
+  const sub = document.getElementById("subSelect").value;
+  const prob = problems[p][sub];
+  document.getElementById("code").value = prob.sampleCode;
 }
 
-// 提出
+// --- コード提出 ---
 async function submitCode() {
   const problemId = document.getElementById("problemSelect").value;
   const subId = document.getElementById("subSelect").value;
   const code = document.getElementById("code").value;
   const resultElem = document.getElementById("result");
-
   resultElem.textContent = "採点中...";
 
   try {
