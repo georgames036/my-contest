@@ -14,105 +14,63 @@
 
 <h1>DNCL Contest</h1>
 
-<!-- 問題選択 -->
 <label>問題番号: 
-  <select id="problemSelect" onchange="updateProblem()"> </select>
+  <select id="problemSelect" onchange="updateProblem()">
+    <option value="1">1</option>
+  </select>
 </label>
 
 <label>小問: 
-  <select id="subSelect" onchange="updateProblem()"> </select>
+  <select id="subSelect" onchange="updateProblem()">
+    <option value="A">A</option>
+  </select>
 </label>
 
-<!-- 問題内容表示 -->
 <div id="description"></div>
 <div id="sample"></div>
-<button onclick="insertSample()">サンプル入力をコードにセット</button>
+<button onclick="insertSample()">サンプルコードを挿入</button>
 
-<!-- コード入力 -->
 <textarea id="code" placeholder="ここにDNCLコードを入力"></textarea><br>
 <button onclick="submitCode()">提出</button>
 
-<!-- 結果表示 -->
 <pre id="result"></pre>
 
 <script>
-// ----- 問題データ -----
 const problems = {
   "1": {
-    "description": "問題1: 入力 N M → N+M を出力せよ",
-    "A": { sampleInput: "2 3", expected: "5" },
-    "B": { sampleInput: "7 8", expected: "15" },
-    "C": { sampleInput: "100 200", expected: "300" }
-  },
-  "2": {
-    "description": "問題2: 2つの整数の差を出力せよ",
-    "A": { sampleInput: "10 5", expected: "5" },
-    "B": { sampleInput: "20 7", expected: "13" },
-    "C": { sampleInput: "50 30", expected: "20" }
-  },
-  "3": {
-    "description": "問題3: 2つの整数の積を出力せよ",
-    "A": { sampleInput: "5 7", expected: "35" },
-    "B": { sampleInput: "8 5", expected: "40" },
-    "C": { sampleInput: "9 5", expected: "45" }
+    "description": "第1問A: 1つの整数Aが入力されるので、それを2倍した値2Aを出力してください",
+    "A": { sampleInput: "任意整数", expected: "2*A" }
   }
 };
 
-// ----- 初期化 -----
-const problemSelect = document.getElementById("problemSelect");
-const subSelect = document.getElementById("subSelect");
-
-function initProblemSelect() {
-  problemSelect.innerHTML = "";
-  for (let p in problems) {
-    problemSelect.innerHTML += `<option value="${p}">${p}</option>`;
-  }
-  updateSubSelect();
-  updateProblem();
-}
-
-function updateSubSelect() {
-  const p = problemSelect.value;
-  subSelect.innerHTML = "";
-  for (let sub in problems[p]) {
-    if(sub !== "description") {
-      subSelect.innerHTML += `<option value="${sub}">${sub}</option>`;
-    }
-  }
-}
-
-// ----- 問題内容表示 -----
+// 問題表示
 function updateProblem() {
-  updateSubSelect();
-  const p = problemSelect.value;
-  const sub = subSelect.value;
-  const descElem = document.getElementById("description");
-  const sampleElem = document.getElementById("sample");
-
-  descElem.textContent = problems[p].description;
-  sampleElem.textContent = `小問${sub} サンプル入力: ${problems[p][sub].sampleInput}`;
+  const p = document.getElementById("problemSelect").value;
+  const sub = document.getElementById("subSelect").value;
+  document.getElementById("description").textContent = problems[p].description;
+  document.getElementById("sample").textContent = `小問${sub} サンプル入力: ${problems[p][sub].sampleInput}`;
 }
 
-// ----- サンプル入力をコードにコピー -----
+// サンプルコード挿入
 function insertSample() {
-  const p = problemSelect.value;
-  const sub = subSelect.value;
-  const sample = problems[p][sub].sampleInput;
   const codeArea = document.getElementById("code");
-  codeArea.value = `N, M = ${sample}\n`;  // DNCL風に
+  codeArea.value = `# 任意整数 A が入力されます
+# A = 入力される整数
+S = A*2
+「Sを表示する」を表示する`;
 }
 
-// ----- 提出 -----
+// 提出
 async function submitCode() {
-  const problemId = problemSelect.value;
-  const subId = subSelect.value;
+  const problemId = document.getElementById("problemSelect").value;
+  const subId = document.getElementById("subSelect").value;
   const code = document.getElementById("code").value;
   const resultElem = document.getElementById("result");
 
   resultElem.textContent = "採点中...";
 
   try {
-    const res = await fetch("https://script.google.com/macros/s/AKfycbw7dZphG6TATzqNdGl_N1GzBCk3Zf7A3I4ptXKUvKq2SHoBgS5Ik8HKMDFew0jbhJ4bSA/exec", {
+    const res = await fetch("https://script.google.com/macros/s/AKfycbXXXXXX/exec", {
       method: "POST",
       body: JSON.stringify({ problemId, subId, code })
     });
@@ -123,8 +81,8 @@ async function submitCode() {
   }
 }
 
-// 初期化
-initProblemSelect();
+// 初期表示
+updateProblem();
 </script>
 
 </body>
