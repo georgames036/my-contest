@@ -112,7 +112,7 @@ async function submitCode() {
   resultElem.textContent = "採点中...";
 
   try {
-    const res = await fetch("https://script.google.com/macros/s/AKfycbXXXXXX/exec", {
+    const res = await fetch("https://script.google.com/macros/s/AKfycbw7dZphG6TATzqNdGl_N1GzBCk3Zf7A3I4ptXKUvKq2SHoBgS5Ik8HKMDFew0jbhJ4bSA/exec", {
       method: "POST",
       body: JSON.stringify({ problemId, subId, code })
     });
